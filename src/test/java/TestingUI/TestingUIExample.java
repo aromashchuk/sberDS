@@ -24,18 +24,50 @@ public class TestingUIExample{
     }
 
     @Test (priority = 1)
-    public void signInErrors(){
-        driver.get("https://app.usertesting.com/users/sign_in");
-        driver.findElement(By.name("commit")).click();
-        WebElement errorAccount = driver.findElement(By.xpath("//span[@class=\"form__hint l-flex mr-auto\"]"));
-        Assert.assertEquals(errorAccount.getText(), "Please enter a valid email address");
-        WebElement errorPassword = driver.findElement(By.xpath("//span[@class=\"form__hint form__hint--error l-flex mr-auto\"]"));
-        Assert.assertEquals(errorPassword.getText(), "Please enter a valid password");
+    public void LogInto(){
+        driver.get("https://sugaringfactory.com/index.php?route=account/login");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"email\"]")).sendKeys("frechnuts@gmail.com");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"password\"]")).sendKeys("Qwerty123");
+        driver.findElement(By.xpath("//div[@class=\"login-buttons\"]//a[contains(text(), 'Login')]")).click();
+        Assert.assertEquals(driver.getTitle(), "My Account");
     }
 
-    @Test
-    public void signIn2(){
+    @Test (priority = 2)
+    public void signInErrorsEmptyFields(){
+        driver.get("https://sugaringfactory.com/index.php?route=account/login");
+        driver.findElement(By.xpath("//div[@class=\"login-buttons\"]//a[contains(text(), 'Login')]")).click();
+        WebElement errorAccount = driver.findElement(By.xpath("//div[@class='warning']"));
+        Assert.assertEquals(errorAccount.getText(), "Warning: No match for E-Mail Address and/or Password.");
+    }
 
+    @Test (priority = 3)
+    public void signInErrorsIncorrectLoginPassword(){
+        driver.get("https://sugaringfactory.com/index.php?route=account/login");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"email\"]")).sendKeys("fakeID@gmail.com");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"password\"]")).sendKeys("fakePassword");
+        driver.findElement(By.xpath("//div[@class=\"login-buttons\"]//a[contains(text(), 'Login')]")).click();
+        WebElement errorAccount = driver.findElement(By.xpath("//div[@class='warning']"));
+        Assert.assertEquals(errorAccount.getText(), "Warning: No match for E-Mail Address and/or Password.");
+    }
+
+    @Test (priority = 4)
+    public void signInCorrectLoginIncorrectPassword(){
+        driver.get("https://sugaringfactory.com/index.php?route=account/login");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"email\"]")).sendKeys("frechnuts@gmail.com");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"password\"]")).sendKeys("fakePassword");
+        driver.findElement(By.xpath("//div[@class=\"login-buttons\"]//a[contains(text(), 'Login')]")).click();
+        WebElement errorAccount = driver.findElement(By.xpath("//div[@class='warning']"));
+        Assert.assertEquals(errorAccount.getText(), "Warning: No match for E-Mail Address and/or Password.");
+    }
+
+    @Test (priority = 5)
+    public void signInCorrectPasswordIncorrectLogin(){
+        driver.get("https://sugaringfactory.com/index.php?route=account/login");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"email\"]")).sendKeys("fakeID@gmail.com");
+        driver.findElement(By.xpath("//input[@class=\"q1 margen-bottom\" and @name=\"password\"]")).sendKeys("Qwerty123");
+        driver.findElement(By.xpath("//div[@class=\"login-buttons\"]//a[contains(text(), 'Login')]")).click();
+        WebElement errorAccount = driver.findElement(By.xpath("//div[@class='warning']"));
+        Assert.assertEquals(errorAccount.getText(), "Warning: No match for E-Mail Address and/or Password.");
     }
 
     @AfterMethod
